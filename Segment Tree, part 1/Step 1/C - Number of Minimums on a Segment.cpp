@@ -1,0 +1,125 @@
+/**                         _       _______
+                           | |     |____   /
+                           | |          / /
+                           | |         / /
+                           | |____    / /
+                           |______|  /_/
+**/
+
+#include<bits/stdc++.h>
+using namespace std;
+void dbg_out() { cerr << endl; }
+template <typename Head, typename... Tail>
+void dbg_out(Head H, Tail... T) {
+    cerr << ' ' << H;
+    dbg_out(T...);
+}
+#define dbg(...) cerr << "(" << #__VA_ARGS__ << "):", dbg_out(__VA_ARGS__)
+typedef         long long ll;
+typedef         long double ld;
+typedef         vector<ll>vl;
+typedef         deque<ll>dq;
+typedef         pair<ll,ll>pl;
+#define         yes {cout<<"YES"<<endl;return;}
+#define         no {cout<<"NO"<<endl;return;}
+#define         CR(_) {cout<<_<<endl;return;}
+#define         F first
+#define         S second
+#define         pb push_back
+#define         ppb pop_back
+#define         pf push_front
+#define         ppf pop_front
+#define         aff(v) for(auto e:v) cout<<e<<" ";cout<<endl;
+#define         all(v) v.begin(), v.end()
+#define         rall(v) v.rbegin(), v.rend()
+//const           ll MOD = LLONG_MAX;
+//const           ll MOD = 998244353;
+const           ll MOD=1000000007;
+const           ld eps=1e-7;
+const           double PI=acos(-1);
+const           int N=2e5+5;
+const           ll INF=1e18;
+const           int L = log2(N)+1;
+struct item{
+    ll val,c;
+    item(ll a=0){
+        val=a;
+        c=1;
+    }
+};
+
+template <typename T, class F = function<T(const T&, const T&)>>
+class SegmentTree {
+    T NEUTRAL;
+    int n;
+    vector<T> tree;
+    F func;
+public:
+    SegmentTree(int sz,T neutral, const F& f) : func(f) {
+        NEUTRAL = neutral;
+        n = (1 << (32 - __builtin_clz(sz)));
+        tree.resize(n*2);
+    }
+
+    void update(int index, T value) {
+        tree[index+n] = value;
+        index = index + n;
+        for (int i = index; i > 1; i >>= 1){
+            tree[i/2] = func(tree[i], tree[i^1]);
+        }
+    }
+
+    T query(int l, int r) {
+        T ans = NEUTRAL;
+        for (l += n, r += n+1; l < r; l >>= 1, r >>= 1) {
+            if (l&1) {
+                ans = func(ans, tree[l++]);
+            }
+            if (r&1) {
+                ans = func(ans, tree[--r]);
+            }
+        }
+        return ans;
+    }
+};
+/*
+  the tree is 0-indexed
+  query the range [l, r], l and r are inclusive
+  usage exemple:
+  auto func = [&](ll a, ll b) -> ll { return a+b;};
+  SegmentTree<ll> st(n,0,func);
+*/
+void solve(){
+    int n,m;cin>>n>>m;
+    vl v(n);
+    for(ll i=0;i<n;i++)cin>>v[i];
+    auto func = [&](item a, item b) -> item{
+        if(a.val<b.val)return a;
+        if(a.val>b.val)return b;
+        a.c+=b.c;
+        return a;
+    };
+    auto it=item(INF);
+    SegmentTree<item> st(n,it,func);
+    for(int i=0;i<n;i++)st.update(i,v[i]);
+    while(m--){
+        int test;cin>>test;
+        if(test==1){
+            ll i,val;cin>>i>>val;
+            st.update(i,val);
+            continue;
+        }
+        ll l,r;cin>>l>>r;
+        auto ans=st.query(l,r-1);
+        cout<<ans.val<<" "<<ans.c<<endl;
+    }
+}
+int main(){
+        ios_base::sync_with_stdio(false);cin.tie(0);
+        //freopen("input.txt", "r",stdin);
+        //freopen("output.txt", "w",stdout);
+        int _=1;
+        //cin >>_;
+        //cout<<fixed<<setprecision(6);
+        while(_--)solve();
+}
