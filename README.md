@@ -1,6 +1,7 @@
 # ITMO-Academy-pilot-course-Solutions
 My personal Solutions in ITMO Academy: pilot course 
-- **[Codeforces](https://codeforces.com//edu//courses/)** 
+- **[Codeforces](https://codeforces.com/)** 
+- **[EDU](https://codeforces.com//edu//courses/)** 
 
 ## User Details ([L_7](https://codeforces.com/profile/L_7))
 
